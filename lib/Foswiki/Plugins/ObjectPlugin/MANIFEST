@@ -1,4 +1,17 @@
 # Release manifest for ObjectPlugin
 data/System/ObjectPlugin.txt 0644 Documentation
-lib/Foswiki/Plugins/ObjectPlugin.pm 0644 Perl module
-
+data/System/JQueryQuickSearch.txt 0644
+data/System/ObjectModules.txt 0644
+data/System/ObjectPluginQBE.txt 0644
+data/System/ObjectTemplate.txt 0644
+lib/Foswiki/Form/Noload.pm 0644
+lib/Foswiki/Plugins/ObjectPlugin.pm 0644
+lib/Foswiki/Plugins/ObjectPlugin/Object.pm 0644
+lib/Foswiki/Plugins/ObjectPlugin/ObjectSet.pm 0644
+pub/System/JQueryQuickSearch/jquery.quicksearch.js 0644
+pub/System/ObjectModules/moveobject.js 0644
+pub/System/ObjectPlugin/object.css 0644
+pub/System/ObjectPlugin/object.js 0644
+templates/edit.object.tmpl 0644
+templates/form.object.tmpl 0644
+templates/oopsobject.tmpl 0644

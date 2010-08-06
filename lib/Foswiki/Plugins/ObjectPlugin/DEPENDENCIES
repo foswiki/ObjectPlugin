@@ -1,5 +1,5 @@
 # Dependencies for ObjectPlugin
-# Example:
-# Time::ParseDate,>=2003.0211,cpan,Required.
-# Foswiki::Plugins,>=1.2,perl,Requires version 1.2 of handler API.
-
+Time::ParseDate,>=2003.0211,cpan,Required.
+JSON,>=2.21,cpan,Required.
+JSON::XS,>=2.29,cpan,Recommended for performance.
+Foswiki::Plugins::HijaxPlugin,>=1.1,perl,Required.

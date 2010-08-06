@@ -10,7 +10,7 @@ tr.noload { display:none; }
 %TMPL:DEF{"formstart"}%<div class="foswikiFormHolder" id="formHolder">
 <form id="editObject%UID%" name="main" action="%SCRIPTURLPATH{rest}%/ObjectPlugin/save" method="post" onsubmit="return validateTWikiMandatoryFields(event)">%TMPL:END%
 
-%TMPL:DEF{"formparameters:edit"}%<input type="hidden" name="redirectto" value="%SCRIPTURL{view}%/%WEB%/%TOPIC%#ObjecT%UID%" />
+%TMPL:DEF{"formparameters:edit"}%<input type="hidden" name="redirectto" value="%SCRIPTURL{view}%/%OWEB%/%OTOPIC%#ObjecT%UID%" />
 <input type="hidden" name="topic" value="%OWEB%.%OTOPIC%" />
 <input type="hidden" name="uid" value="%UID%" />
 <input type="hidden" name="type" value="%TYPE%" />

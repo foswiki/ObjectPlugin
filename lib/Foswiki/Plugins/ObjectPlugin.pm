@@ -18,7 +18,7 @@ use strict;
 use Assert;
 use Error qw( :try );
 use JSON -convert_blessed_universally;
-use Data::Dumper;
+# use Data::Dumper;
 
 require Foswiki::Func;
 require Foswiki::Plugins;
@@ -27,8 +27,8 @@ require Foswiki::AccessControlException;
 
 use vars qw( $VERSION $RELEASE $SHORTDESCRIPTION $processingDoneForREST $debug $defaultsAdded );
 $debug = 0; # toggle me
-$VERSION = '$Rev:  $';
-$RELEASE = '15 Apr 2010';
+$VERSION = '$Rev$';
+$RELEASE = '1.0';
 $SHORTDESCRIPTION = 'Use a topic as an Object store.';
 
 sub initPlugin {
@@ -336,9 +336,6 @@ sub _objectMove {
 		}
 	}
 	
-	my $append = $query->param('append') || 0;
-	# add new object at the bottom? default is at the top
-	my $objstr = $object->stringify();
 	$newtext = insertObject($object, $query, $newtext);
 	$processingDoneForREST = 1;
 	Foswiki::Func::saveTopic($newweb, $newtopic, $newmeta, $newtext, { comment => "moved object $uid to here from $web.$topic" });
@@ -351,41 +348,48 @@ sub _objectMove {
 
 sub insertObject {
 	my ($object, $query, $text) = @_;
+	my $inserted = 0;
 	# add new object at the bottom? default is at the top
 	my $otext = $object->stringify();
 	my $position = $query->param('insertpos') || $object->{insertpos} || 'prepend';
 	my $append = $position =~ m/(bottom|after|append)/io ? 1 : 0;
 	my $location = $query->param('insertloc') || $object->{insertloc} || 'topic:';
 	my ($target, $match) = split(/:/,$location,2);
-	if ($target eq 'topic') {
-		$text = $append ? $text."\n".$otext : $otext."\n".$text;
-	} elsif ($target eq 'section') {
+	if ($target eq 'section') {
 		if ($append) {
 			$text =~ s/(%ENDSECTION{.*?name="$match".*?}%)/$otext\n$1/o;
 		} else {
 			$text =~ s/(%SECTION{.*?name="$match".*?}%)/$1\n$otext/o;
 		}
+		$inserted = 1 if $text =~ m/$otext/;
 	} elsif ($target eq 'object') {
 		my ($obj, $pre, $post, $meta) = 
 			Foswiki::Plugins::ObjectPlugin::ObjectSet::loadToFind(
 				$match, $object->{web}, $object->{topic}, $text, undef, 1);
 
-			throw Foswiki::OopsException('object',
-								def => 'noobjectuid',
-								web => $object->{web},
-								topic => $object->{topic},
-								params => [ $match, "$object->{web}.$object->{topic}" ] ) unless defined $obj; 
-		if ($append) {
-			$text = $pre.$obj->stringify()."\n".$otext.$post;
-		} else {
-			$text = $pre.$otext."\n".$obj->stringify().$post;
+		# throw Foswiki::OopsException('object',
+							# def => 'noobjectuid',
+							# web => $object->{web},
+							# topic => $object->{topic},
+							# params => [ $match, "$object->{web}.$object->{topic}" ] ) unless defined $obj; 
+		if ($obj) {
+			if ($append) {
+				$text = $pre.$obj->stringify()."\n".$otext.$post;
+			} else {
+				$text = $pre.$otext."\n".$obj->stringify().$post;
+			}
+			$inserted = 1;
 		}
 	} elsif ($target eq 'target') {
 		if ($append) {
-			$text =~ s/($target)/$1\n$otext/o;
+			$text =~ s/($match)/$1\n$otext/o;
 		} else {
-			$text =~ s/($target)/$otext\n$1/o;
+			$text =~ s/($match)/$otext\n$1/o;
 		}
+		$inserted = 1 if $text =~ m/$otext/;
+	} 
+	if ($target eq 'topic' || !$inserted) {
+		$text = $append ? $text."\n".$otext : $otext."\n".$text;
 	}
 	return $text;
 }

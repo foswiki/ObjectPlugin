@@ -43,4 +43,6 @@ Deleted by %USERSWEB%.%WHO% on %WHEN%.
    </div>
 </div>%TMPL:END%
 
+%TMPL:INCLUDE{UserObject}%
+
 </verbatim>

@@ -21,7 +21,7 @@ require Foswiki::Form;
 require Time::ParseDate;
 
 use vars qw( $now );
-use Data::Dumper;
+# use Data::Dumper;
 use JSON;
 
 sub setNow {
@@ -126,7 +126,7 @@ sub loadObjectDef {
 						types => {}
 					};
 	}
-	foreach my $default (qw(creator uid deleted edited)) {
+	foreach my $default (qw(creator uid deleted edited reltopic)) {
 		$objectDef->{types}->{$default} = 'default';
 	}
 	$objectDef->{types}->{created} = 'default,date';
@@ -438,7 +438,7 @@ sub _getTemplate {
     # Get the templates.
     my $templates = Foswiki::Func::loadTemplate( $file );
     if (! $templates ) {
-	    my $templateFile = Foswiki::Func::getPreferencesValue('OBJECTPLUGIN_TEMPLATES') || 'Object';
+	    my $templateFile = Foswiki::Func::getPreferencesValue('OBJECTPLUGIN_DEFAULTTEMPLATES') || 'Object';
         Foswiki::Plugins::ObjectPlugin::writeDebug(
 			"Could not read template file '".$file."Template'. Using ".$templateFile."Template file.");
 		$name = 'object'.$tail;
