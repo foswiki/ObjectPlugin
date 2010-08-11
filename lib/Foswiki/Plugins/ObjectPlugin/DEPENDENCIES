@@ -3,3 +3,4 @@ Time::ParseDate,>=2003.0211,cpan,Required.
 JSON,>=2.21,cpan,Required.
 JSON::XS,>=2.29,cpan,Recommended for performance.
 Foswiki::Plugins::HijaxPlugin,>=1.1,perl,Required.
+Foswiki::Plugins::FlexWebListPlugin,>=1.51,perl,Required, see ObjectModules.

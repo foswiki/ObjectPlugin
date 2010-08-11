@@ -14,7 +14,7 @@
 
 %FLEXWEBLIST{header="<select id='op-weblist'><option value='%BASEWEB%'>Choose a web...</option>" format="<option value='$web'> $indent(-) $name</option>" footer="</select>" subheader=" " subfooter=" "}%
 
-<div id="treecontrol">
+<div id="treecontrol" class="hidden">
 	<a title="Collapse the entire tree below" href="#">%ICON{minus}% Collapse All</a>
 	<a title="Expand the entire tree below" href="#">%ICON{plus}% Expand All</a>
 	<a title="Toggle the tree below, opening closed branches, closing open branches" href="#">Toggle All</a>

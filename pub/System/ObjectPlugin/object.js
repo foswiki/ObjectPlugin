@@ -1,21 +1,19 @@
 (function($) {  
 var $objectDropbox;
-//    $('JQSCRIPT{"jquery.treeview.js"}%').appendTo('body');
 $.fn.initObject = function() {
 	return this.each(function(){
 		var $object = $(this);
 		$(this).find("div.object-content").hide();
-		$(this).find("div.maximize-object").css({"display":"inline"});
 		$(this).find("div.minimize-object").click(function () { 
 			$(this).hide();       	
 			$object.children("div.object-content:first").slideUp();
 			$(this).siblings("div.maximize-object").css({"display":"inline"});
-		});
+		}).hide();
 		$(this).find("div.maximize-object").click(function () {  
 			$(this).hide();  	 	
 			$object.children("div.object-content:first").slideDown();
 			$(this).siblings("div.minimize-object").css({"display":"inline"});
-		}); 
+		}).css({"display":"inline"}); 
 		$(this).draggable({
 			revert: true,
 			handle: "div.object-drag-handle"

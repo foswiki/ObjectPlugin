@@ -44,7 +44,7 @@ sub add {
 
 # PUBLIC STATIC load an object set from a block of text
 sub load {
-    my ( $web, $topic, $text, $purpose, $keepText, $withDeleted, $setClass, $objectClass ) = @_;
+    my ( $web, $topic, $text, $purpose, $keepText, $withDeleted, $setClass, $objectClass, $reltopic ) = @_;
 	$withDeleted ||= 0;
 	$setClass ||= 'Foswiki::Plugins::ObjectPlugin::ObjectSet';
 	$objectClass ||= 'Foswiki::Plugins::ObjectPlugin::Object';
@@ -70,9 +70,27 @@ sub load {
             my $object = $objectClass->new($web, $topic, $attrs, $descr);
 			next unless $object;
 			my $add = $withDeleted ? 1 : $object->{deleted} ? 0 : 1;
+			if ($add && $reltopic) {
+				$add = 0 unless ($object->{reltopic} && $object->{reltopic} eq $reltopic);
+			}
 			$objectSet->add($object) if $add;
         } elsif ($keepText) {
-            $objectSet->add($block);
+            if ($block =~ m/%[A-Z]+({.*?})?%/) { # only if there are macros that could produce new OBJECTs
+												 # and only likely-ish at this stage if this is via a REST call
+				Foswiki::Plugins::ObjectPlugin::disableStandardProcessing();
+				$block = Foswiki::Func::expandCommonVariables($block);
+				if ($block) {
+					my $newobjects = 
+					  load($web, $topic, $block, $purpose, 0, $withDeleted, $setClass, $objectClass, $reltopic);
+					if (scalar(@{$newobjects->{OBJECTS}})) {
+						$objectSet->concat($newobjects);
+					} else {
+						$objectSet->add($block);
+					}
+				}
+			} else {
+				$objectSet->add($block);
+			}
         }
         $i++ while $i < scalar(@blocks) && !length($blocks[$i]);
     }

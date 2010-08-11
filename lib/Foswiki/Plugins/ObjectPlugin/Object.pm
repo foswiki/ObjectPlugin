@@ -46,8 +46,10 @@ sub new {
     # conditionally load field values, interpreting them
     # according to their type.
     foreach my $key ( keys %$attr ) {
+		next if $key =~ m/^_/;
         my $fieldType = $objectTypes->{$key};
-		next unless $fieldType;
+		# next unless $fieldType;
+		$fieldType ||= 'text'; # dynamically generated objects can contain whatever attributes they want
         my $val = dataDecode($attr->{$key});
 		if ( $fieldType =~ 'multi' ) {
 			@{$this->{$key}} = split(/\s*,\s*/, $val);
@@ -126,11 +128,13 @@ sub loadObjectDef {
 						types => {}
 					};
 	}
-	foreach my $default (qw(creator uid deleted edited reltopic)) {
+	foreach my $default (qw(creator created uid deleted edited)) {
 		$objectDef->{types}->{$default} = 'default';
 	}
-	$objectDef->{types}->{created} = 'default,date';
-	$objectDef->{types}->{type} = 'required';
+	$objectDef->{types}->{created} .= ',date';
+	foreach my $reserved (qw(type reltopic)) {
+		$objectDef->{types}->{$reserved} = 'reserved';
+	}
 	foreach my $noload (qw(oDef meta css js insertpos insertloc)) {
 		$objectDef->{types}->{$noload} = 'noload';
 	}
@@ -241,7 +245,7 @@ sub TO_JSON {
 	my $types = $this->{oDef}->{types};
 	foreach my $key (keys %$this) {
 		# return everything unless specifically told not to
-		next if $types->{$key} =~ /noload/;
+		next if $types->{$key} && $types->{$key} =~ /noload/;
 		$new->{$key} = $this->{$key};
 	}
 	return $new;
@@ -452,13 +456,15 @@ sub _getTemplate {
 
 	# the template for a given object type should only be loaded once, 
 	# same goes for 'adding' of the css and js files
-    Foswiki::Func::addToHEAD('ObjectPlugin_'.$type.'_CSS', 
-		qq(<link rel="stylesheet" href="$this->{oDef}->{'css'}" type="text/css" media="all" />)) 
+    Foswiki::Func::addToZone('head','ObjectPlugin_'.$type.'_CSS', 
+		qq(<link rel="stylesheet" href="$this->{oDef}->{'css'}" type="text/css" media="all" />),
+		'OBJECTPLUGIN_CSS') 
 			if $this->{oDef}->{'css'};
-    Foswiki::Func::addToHEAD('ObjectPlugin_'.$type.'_JS', 
-		qq(<script type="text/javascript" src="$this->{oDef}->{'js'}"></script>)) 
+    Foswiki::Func::addToZone('body','ObjectPlugin_'.$type.'_JS', 
+		qq(<script type="text/javascript" src="$this->{oDef}->{'js'}"></script>),
+		'OBJECTPLUGIN_JS') 
 			if $this->{oDef}->{'js'};
-	Foswiki::Plugins::ObjectPlugin::writeDebug("css: $this->{oDef}->{'css'}, js: $this->{oDef}->{'js'}");
+	# Foswiki::Plugins::ObjectPlugin::writeDebug("css: $this->{oDef}->{'css'}, js: $this->{oDef}->{'js'}");
 
 	$tmpls->{$type.$tail} = $t;
 	Foswiki::Plugins::ObjectPlugin::writeDebug($tmpls->{$type.$tail});
@@ -572,6 +578,8 @@ sub renderForEdit {
 	# my $tmpl = _getTemplate($this->{type}, $name);
     my $tmpl = Foswiki::Func::readTemplate('edit', Foswiki::Func::getSkin());
 
+    $tmpl =~ s/%UID%/$this->{uid}/g; # here because of ADDTOZONE which otherwise would remove the tag as part
+									 # of the next step before it could be replaced here
     $tmpl = Foswiki::Func::expandCommonVariables($tmpl);
     $tmpl = Foswiki::Func::renderText($tmpl);
 
@@ -611,7 +619,6 @@ sub renderForEdit {
 	
 	$tmpl =~ s/%FORMFIELDS%/$formText/g;
 
-    $tmpl =~ s/%UID%/$this->{uid}/g;
 	$tmpl =~ s/%TYPE%/$this->{type}/g;
 
     # Process the text so it's nice to edit.

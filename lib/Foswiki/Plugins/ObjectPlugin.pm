@@ -25,7 +25,7 @@ require Foswiki::Plugins;
 require Foswiki::OopsException;
 require Foswiki::AccessControlException;
 
-use vars qw( $VERSION $RELEASE $SHORTDESCRIPTION $processingDoneForREST $debug $defaultsAdded );
+use vars qw( $VERSION $RELEASE $SHORTDESCRIPTION $disableStandardProcessing $debug $defaultsAdded );
 $debug = 0; # toggle me
 $VERSION = '$Rev$';
 $RELEASE = '1.0';
@@ -49,7 +49,7 @@ sub initPlugin {
 	Foswiki::Func::registerTagHandler( 'OBJECTBUTTON', \&_handleObjectButton, 'context-free');
     # $debug = $Foswiki::cfg{Plugins}{ObjectPlugin}{Debug} || 1;
 	
-	$processingDoneForREST = 0;
+	$disableStandardProcessing = 0;
 	$defaultsAdded = 0;
     return 1;
 };
@@ -60,9 +60,14 @@ sub init {
 	Foswiki::Plugins::ObjectPlugin::Object::setNow();
 }
 
+sub disableStandardProcessing {
+	$disableStandardProcessing = 1;
+}
+
 sub commonTagsHandler {
     my( $otext, $topic, $web, $meta ) = @_;
 
+	return if $disableStandardProcessing;
     return unless ( $_[0] =~ m/%OBJECT{.*}%/o );
 
 	init();
@@ -75,7 +80,7 @@ sub commonTagsHandler {
 sub beforeSaveHandler {
     my( $text, $topic, $web ) = @_;
 
-	return if $processingDoneForREST;
+	return if $disableStandardProcessing;
 	return unless $_[0] =~ m/%OBJECT{.*?}%/o;
 	# OK, the topic itself is being saved
 	# and there are some objects that may have been 
@@ -111,6 +116,7 @@ sub _handleObjectSearch {
 
     my $objects = Foswiki::Plugins::ObjectPlugin::ObjectSet::allObjectsInWebs( $web, $attrs, 0 );
     $objects->sort( $sort );
+	return $objects->stringify() if $disableStandardProcessing;
     return $objects->renderForDisplay( $format );
 }
 
@@ -226,7 +232,7 @@ sub _objectUpdate {
 
 	if (defined $object) {
 		$object->$fn($query);
-		$processingDoneForREST = 1;
+		$disableStandardProcessing = 1;
 		Foswiki::Func::saveTopic($web, $topic, $os->{meta}, $os->stringify(), { comment => 'op save' });
 		# $object->{id} = $object->{uid};
 		return $object;
@@ -249,7 +255,7 @@ sub _objectNew {
 	$object->{uid} = ''; # belts and braces, set in stringify if empty
 	# writeDebug(Dumper($object));
 	$text = insertObject($object, $query, $text);
-	$processingDoneForREST = 1;
+	$disableStandardProcessing = 1;
 	Foswiki::Func::saveTopic($web, $topic, $meta, $text,{ comment => 'new object' });
 	# $object->{id} = $object->{uid};
 	# $object = {
@@ -337,7 +343,7 @@ sub _objectMove {
 	}
 	
 	$newtext = insertObject($object, $query, $newtext);
-	$processingDoneForREST = 1;
+	$disableStandardProcessing = 1;
 	Foswiki::Func::saveTopic($newweb, $newtopic, $newmeta, $newtext, { comment => "moved object $uid to here from $web.$topic" });
 
 	$Foswiki::Plugins::SESSION->{user} = $curUser; # switch back incase we did a switch to admin

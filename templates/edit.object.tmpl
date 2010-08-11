@@ -27,6 +27,5 @@ tr.noload { display:none; }
 
 %TMPL:DEF{"textarea"}%<textarea class="foswikiTextarea foswikiEditboxStyleProportional" id="object%UID%" name="text" rows="%EDITBOXHEIGHT%" cols="%EDITBOXWIDTH%" style='%EDITBOXSTYLE%'>%TEXT%</textarea>
 %TMPL:P{"sig_textareabuttons"}%
-%ADDTOZONE{"body" requires="JQUERYPLUGIN" text="
 %INCLUDE{"%SYSTEMWEB%.JQueryMarkItUpEditor" target="#object%UID%"}%
-"}%%TMPL:END%
+%TMPL:END%
