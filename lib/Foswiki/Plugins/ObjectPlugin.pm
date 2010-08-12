@@ -28,7 +28,7 @@ require Foswiki::AccessControlException;
 use vars qw( $VERSION $RELEASE $SHORTDESCRIPTION $disableStandardProcessing $debug $defaultsAdded );
 $debug = 0; # toggle me
 $VERSION = '$Rev$';
-$RELEASE = '1.0';
+$RELEASE = '1.01';
 $SHORTDESCRIPTION = 'Use a topic as an Object store.';
 
 sub initPlugin {

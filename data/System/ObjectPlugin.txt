@@ -5,7 +5,7 @@ One line description, required for extensions repository catalog.
 BuildContrib will fill in the SHORTDESCRIPTION with the value of
 $SHORTDESCRIPTION from the .pm module, or you can redefine it here if you
 prefer.
-   * Set SHORTDESCRIPTION = %$SHORTDESCRIPTION%
+   * Set SHORTDESCRIPTION = Use a topic as an object store.
 -->
 %SHORTDESCRIPTION%
 
@@ -37,6 +37,7 @@ The code is stable and full featured but this early release without completed do
 |  Release: | %$RELEASE% |
 |  Version: | %$VERSION% |
 |  Change History: | <!-- versions below in reverse order -->&nbsp; |
+|  12 Aug 2010 | Foswiki:Tasks/Item9465 fix permanent expanding of macros when updating an object |
 |  06 Aug 2010 | first release |
 |  Dependencies: | %$DEPENDENCIES% |
 |  Home page: | http://foswiki.org/bin/view/Extensions/ObjectPlugin |
