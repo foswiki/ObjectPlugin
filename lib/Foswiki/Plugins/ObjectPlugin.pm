@@ -73,7 +73,7 @@ sub commonTagsHandler {
 	init();
 
 	# load everything including text and deleted objects
-    my $os = Foswiki::Plugins::ObjectPlugin::ObjectSet::load($_[2], $_[1], $_[0], undef, 1, 1);
+    my $os = Foswiki::Plugins::ObjectPlugin::ObjectSet::load($_[2], $_[1], $_[0], undef, 0, 1);
 	$_[0] = $os->renderForDisplay();
 }
 
@@ -90,7 +90,7 @@ sub beforeSaveHandler {
 	init();
 
     my %seenUID;
-    my $os = Foswiki::Plugins::ObjectPlugin::ObjectSet::load($_[2], $_[1], $_[0], undef, 1, 1);
+    my $os = Foswiki::Plugins::ObjectPlugin::ObjectSet::load($_[2], $_[1], $_[0], undef, 0, 1);
 	# writeDebug(Dumper($os));
     foreach my $object (@{$os->{OBJECTS}}) {
         next unless ref($object);
@@ -227,13 +227,13 @@ sub _objectUpdate {
 	my ($web, $topic, $query, $fn) = @_;
 	my $uid = $query->param('uid');
 
-	my $os = Foswiki::Plugins::ObjectPlugin::ObjectSet::load($web, $topic, undef, 'CHANGE', 1);
-	my $object = $os->findSingleObject($uid);
+	my ($object, $pre, $post, $meta) = Foswiki::Plugins::ObjectPlugin::ObjectSet::loadToFind(
+		$uid, $web, $topic, undef, 'CHANGE' );
 
 	if (defined $object) {
 		$object->$fn($query);
 		$disableStandardProcessing = 1;
-		Foswiki::Func::saveTopic($web, $topic, $os->{meta}, $os->stringify(), { comment => 'op save' });
+		Foswiki::Func::saveTopic($web, $topic, $meta, $pre.$object->stringify().$post, { comment => 'op save' });
 		# $object->{id} = $object->{uid};
 		return $object;
 	} else {
