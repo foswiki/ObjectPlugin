@@ -399,7 +399,7 @@ sub updateFromQuery {
 	my $existing = '';
 	if ($this->{edited}) {
 		my ($lastEdit, $ignore) = split(/=/,$this->{edited},2);
-		return if ($now - Foswiki::Time::parseTime($lastEdit)) 
+		return if ($now - Foswiki::Time::parseTime($lastEdit))
 								< $Foswiki::cfg{ReplaceIfEditedAgainWithin};
 		$existing = ','.$this->{edited};
 	}
@@ -454,15 +454,15 @@ sub _getTemplate {
     $t = "%RED%No such template def TMPL:DEF{$name}%ENDCOLOR%"
 		unless ( defined($t) && $t ne '' ) || $warn eq 'off';
 
-	# the template for a given object type should only be loaded once, 
+	# the template for a given object type should only be loaded once,
 	# same goes for 'adding' of the css and js files
-    Foswiki::Func::addToZone('head','ObjectPlugin_'.$type.'_CSS', 
+    Foswiki::Func::addToZone('head','ObjectPlugin_'.$type.'_CSS',
 		qq(<link rel="stylesheet" href="$this->{oDef}->{'css'}" type="text/css" media="all" />),
-		'OBJECTPLUGIN_CSS') 
+		'OBJECTPLUGIN_CSS')
 			if $this->{oDef}->{'css'};
-    Foswiki::Func::addToZone('script','ObjectPlugin_'.$type.'_JS', 
+    Foswiki::Func::addToZone('script','ObjectPlugin_'.$type.'_JS',
 		qq(<script type="text/javascript" src="$this->{oDef}->{'js'}"></script>),
-		'OBJECTPLUGIN_JS') 
+		'OBJECTPLUGIN_JS')
 			if $this->{oDef}->{'js'};
 	# Foswiki::Plugins::ObjectPlugin::writeDebug("css: $this->{oDef}->{'css'}, js: $this->{oDef}->{'js'}");
 
@@ -481,17 +481,17 @@ sub prepareForDisplay {
 	my $session = $Foswiki::Plugins::SESSION;
 	
 	if ($this->{deleted}) {
-		# the display template for the given type of a deleted object 
+		# the display template for the given type of a deleted object
 		# may be an empty string so turn off the warning
 		$tmpl = $this->_getTemplate($this->{type}, ':deleted', 'off');
 		($when, $who) = split(/=/,$this->{deleted});
 	} else {
 		$tmpl = $this->_getTemplate($this->{type});
-		if ($this->{edited}) { 
+		if ($this->{edited}) {
 			my @edits = split(/,/,$this->{edited});
 			($when, $who) = split(/=/,$edits[0]);
 		}
-		$tmpl = $format if $format; 
+		$tmpl = $format if $format;
 		# done like this so _getTemplate can load the js and css so it can be used in the format
 	}
 
@@ -645,6 +645,6 @@ __DATA__
 # This program is distributed in the hope that it will be useful,
 # but WITHOUT ANY WARRANTY; without even the implied warranty of
 # MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-# GNU General Public License for more details, published at 
+# GNU General Public License for more details, published at
 # http://www.gnu.org/copyleft/gpl.html
 #
