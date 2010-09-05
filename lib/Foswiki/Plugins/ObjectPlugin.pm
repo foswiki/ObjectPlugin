@@ -135,7 +135,7 @@ sub _handleObjectButton {
 <div id="objectsObject"></div>
 HERE
 	addDefaultsToPage();
-	Foswiki::Func::addToZone('body','OBJECTBUTTON_JS', <<"HERE",'OBJECTPLUGIN_JS');
+	Foswiki::Func::addToZone('script','OBJECTBUTTON_JS', <<"HERE",'OBJECTPLUGIN_JS');
 <script type='text/javascript'>
 jQuery(function(){
     jQuery('#newObjectButton').click(function(){
@@ -170,7 +170,7 @@ sub addDefaultsToPage {
     Foswiki::Func::addToZone('head','OBJECTPLUGIN_CSS', <<HERE,'JQUERYPLUGIN::THEME');
 <link rel="stylesheet" href="%PUBURLPATH%/%SYSTEMWEB%/ObjectPlugin/object.css" type="text/css" media="all" />
 HERE
-    Foswiki::Func::addToZone('body','OBJECTPLUGIN_JS', <<"HERE",'HIJAXPLUGIN_JS');
+    Foswiki::Func::addToZone('script','OBJECTPLUGIN_JS', <<"HERE",'HIJAXPLUGIN_JS');
 <script type='text/javascript' src='%PUBURLPATH%/%SYSTEMWEB%/ObjectPlugin/object.js'></script>
 <script type='text/javascript'>
 jQuery(function(){

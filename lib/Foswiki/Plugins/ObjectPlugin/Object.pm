@@ -460,7 +460,7 @@ sub _getTemplate {
 		qq(<link rel="stylesheet" href="$this->{oDef}->{'css'}" type="text/css" media="all" />),
 		'OBJECTPLUGIN_CSS') 
 			if $this->{oDef}->{'css'};
-    Foswiki::Func::addToZone('body','ObjectPlugin_'.$type.'_JS', 
+    Foswiki::Func::addToZone('script','ObjectPlugin_'.$type.'_JS', 
 		qq(<script type="text/javascript" src="$this->{oDef}->{'js'}"></script>),
 		'OBJECTPLUGIN_JS') 
 			if $this->{oDef}->{'js'};
