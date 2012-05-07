@@ -3,12 +3,11 @@
 
 package Foswiki::Form::Noload;
 use base 'Foswiki::Form::FieldDefinition';
-
 # our @ISA = qw(Foswiki::Form::FieldDefinition);
 
 sub new {
     my $class = shift;
-    my $this  = $class->SUPER::new(@_);
+    my $this = $class->SUPER::new( @_ );
     return $this;
 }
 
@@ -17,7 +16,7 @@ sub renderHidden {
 }
 
 sub populateMetaFromQueryData {
-    return ( 1, 0 );
+    return (1, 0);
 }
 
 sub renderForDisplay {
@@ -25,7 +24,7 @@ sub renderForDisplay {
 }
 
 sub renderForEdit {
-    return ( 'noload', '' );
+    return ('noload','');
 }
 
 1;
